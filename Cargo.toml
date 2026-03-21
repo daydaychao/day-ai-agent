@@ -1,11 +1,17 @@
 [package]
-name = "lobster-brain"
+name = "dayai"
 version = "0.1.0"
 edition = "2021"
 
+[[bin]]
+name = "dayai"
+path = "src/main.rs"
+
 [dependencies]
-# Phase 2 需要的非同步請求與 JSON 處理套件
-tokio = { version = "1.36", features = ["full"] }
-reqwest = { version = "0.12", features = ["json", "rustls-tls"], default-features = false }
+clap = { version = "4.4", features = ["derive"] }
+self_update = { version = "0.41", default-features = false, features = ["rustls"] }
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
 serde = { version = "1.0", features = ["derive"] }
 serde_json = "1.0"
+tokio = { version = "1.36", features = ["full"] }
+dotenv = "0.15"

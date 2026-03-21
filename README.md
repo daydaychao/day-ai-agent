@@ -2,6 +2,24 @@
 
 > **目標：** 復刻「小龍蝦」核心邏輯，利用 GitHub Actions 免費算力打造 24h 雲端代理人。
 
+## 🚀 安裝與使用
+
+### 安裝 dayai CLI
+
+```bash
+cargo install --git https://github.com/daydaychao/day-ai-agent --bin dayai
+```
+
+### CLI 使用方式
+
+```bash
+dayai main                    # 執行主要邏輯（呼叫 Gemini API）
+dayai main --prompt "..."    # 自定義 prompt
+dayai models                  # 列出所有可用的 Gemini 模型
+dayai update                  # 更新 dayai 到最新版本
+dayai update --version v0.0.2 # 更新到指定版本
+```
+
 ## 🎯 核心學習路徑 (Learning Roadmap)
 
 ### Phase 1: 雲端基礎設施 (GitHub Actions)
@@ -24,12 +42,31 @@
 
 ## 🛠 目前開發狀態 (Current Status)
 
-- [x] GitHub Private Repo 建立完畢。
+- [x] GitHub Public Repo 建立完畢。
 - [x] Gemini API Key (Google AI Studio) 配置完成。
-- [x] Python 版本 PoC 驗證成功。
-- [x] 使用 Rust 重構 `lobster-brain` 並導入 `rust-cache` 優化執行速度。
-- [x] `src/main.rs` 利用 `tokio`/`reqwest` 呼叫 Gemini 1.5 Flash，印出 JSON 結果 (Phase 2 完成)。
+- [x] `dayai` CLI 工具完成，支援 `main`、`models`、`update` subcommands。
 - [ ] Phase 3：資訊監控 + Discord/State 自動化流程尚未實作。
+
+## 📦 版本發布流程
+
+1. 確認程式碼改好後 commit：
+   ```bash
+   git add . && git commit -m "feat: 新功能"
+   ```
+
+2. 打上 version tag：
+   ```bash
+   git tag v0.0.1
+   ```
+
+3. 推送 code + tag：
+   ```bash
+   git push && git push --tags
+   ```
+
+4. GitHub Actions 會自動：
+   - 編譯 `dayai` binary
+   - 發布到 GitHub Releases
 
 ## 💰 資深免費仔省錢秘笈
 
