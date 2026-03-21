@@ -31,7 +31,7 @@ impl Default for Config {
 }
 
 fn get_config_path() -> PathBuf {
-    let home = dirs::home_dir().expect("找不到 home 目錄");
+    let home = dirs::home_dir().expect("Cannot find home directory");
     home.join(".dayai").join("config.toml")
 }
 
@@ -39,7 +39,7 @@ pub fn load_config() -> Result<Config, Box<dyn std::error::Error>> {
     let config_path = get_config_path();
 
     if !config_path.exists() {
-        return Err("設定檔不存在，請先執行 dayai setup".into());
+        return Err("Config file not found. Run 'dayai setup' first.".into());
     }
 
     let content = fs::read_to_string(&config_path)?;
@@ -78,7 +78,7 @@ pub fn save_config(key: &str) -> Result<(), Box<dyn std::error::Error>> {
     let content = toml::to_string_pretty(&config)?;
     fs::write(&config_path, content)?;
 
-    println!("設定成功！");
+    println!("Configuration saved!");
     Ok(())
 }
 
@@ -95,18 +95,18 @@ pub fn save_model(model: &str) -> Result<(), Box<dyn std::error::Error>> {
     let content = toml::to_string_pretty(&config)?;
     fs::write(&config_path, content)?;
 
-    println!("模型設定成功！");
+    println!("Model configuration saved!");
     Ok(())
 }
 
 pub fn prompt_for_key() -> Result<String, Box<dyn std::error::Error>> {
-    print!("請輸入 GEMINI_API_KEY: ");
+    print!("Enter GEMINI_API_KEY: ");
     io::stdout().flush()?;
 
     let key = rpassword::read_password()?;
 
     if key.trim().is_empty() {
-        return Err("API Key 不能為空".into());
+        return Err("API Key cannot be empty".into());
     }
 
     Ok(key)

@@ -16,17 +16,17 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// 設定：API Key 和模型
+    /// Setup: API Key and model configuration
     Setup,
-    /// 主要邏輯：呼叫 Gemini API
+    /// Execute main logic: call Gemini API
     Main {
-        /// 自定義 prompt（可選）
+        /// Custom prompt (optional)
         #[arg(short, long)]
         prompt: Option<String>,
     },
-    /// 更新 dayai 到最新版本
+    /// Update dayai to latest version
     Update {
-        /// 指定版本（可選）
+        /// Specific version (optional)
         #[arg(short, long)]
         version: Option<String>,
     },
@@ -67,7 +67,7 @@ fn get_api_key() -> Result<String, Box<dyn std::error::Error>> {
         Err(_) => {}
     }
 
-    Err("錯誤：找不到 GEMINI_API_KEY。請執行 'dayai setup' 設定，或設定環境變數 GEMINI_API_KEY。".into())
+    Err("Error: GEMINI_API_KEY not found. Run 'dayai setup' to configure, or set GEMINI_API_KEY environment variable.".into())
 }
 
 const LIGHT_GREEN: &str = "\x1b[92m";
@@ -75,8 +75,8 @@ const RESET: &str = "\x1b[0m";
 
 async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
     let items = &[
-        "設定 GEMINI_API_KEY",
-        "選擇預設模型",
+        "Set GEMINI_API_KEY",
+        "Select default model",
     ];
 
     let selections = &[
@@ -94,12 +94,12 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
         .collect();
 
     let selection = Select::new()
-        .with_prompt("請選擇操作")
+        .with_prompt("Select an option")
         .default(0)
         .clear(true)
         .items(&formatted_items)
         .interact_opt()?
-        .ok_or("已取消")?;
+        .ok_or("Cancelled")?;
 
     match selection {
         0 => {
@@ -116,15 +116,15 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
                 .collect();
 
             let selected = Select::new()
-                .with_prompt("請選擇模型")
+                .with_prompt("Select a model")
                 .default(0)
                 .clear(true)
                 .items(&formatted_models)
                 .interact_opt()?
-                .ok_or("已取消")?;
+                .ok_or("Cancelled")?;
 
             config::save_model(&models[selected])?;
-            println!("✅ 已選擇：{}", models[selected]);
+            println!("✅ Selected: {}", models[selected]);
         }
         _ => {}
     }
@@ -143,7 +143,7 @@ async fn run_main(prompt: Option<String>) -> Result<(), Box<dyn std::error::Erro
     );
 
     let user_prompt = prompt.unwrap_or_else(|| {
-        "你是一位資深獵頭，請用 JSON 格式提供一個虛構的日本遠端前端職缺。請確保輸出僅包含 JSON 內容。".to_string()
+        "You are a senior headhunter. Provide a fictional remote frontend job from Japan in JSON format. Ensure output contains only JSON.".to_string()
     });
 
     let response = client
@@ -163,7 +163,7 @@ async fn run_main(prompt: Option<String>) -> Result<(), Box<dyn std::error::Erro
     let status = response.status();
     if !status.is_success() {
         let err_text = response.text().await?;
-        eprintln!("API 請求失敗，狀態碼: {}\n內容: {}", status, err_text);
+        eprintln!("API request failed. Status: {}\nDetails: {}", status, err_text);
         return Ok(());
     }
 
@@ -174,7 +174,7 @@ async fn run_main(prompt: Option<String>) -> Result<(), Box<dyn std::error::Erro
 }
 
 async fn run_update(_version: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
-    println!("正在檢查更新...");
+    println!("Checking for updates...");
 
     let status = self_update::backends::github::Update::configure()
         .repo_owner("daydaychao")
@@ -185,7 +185,7 @@ async fn run_update(_version: Option<String>) -> Result<(), Box<dyn std::error::
         .build()?
         .update()?;
 
-    println!("更新成功！新版本: {}", status.version());
+    println!("Update successful! New version: {}", status.version());
 
     Ok(())
 }
