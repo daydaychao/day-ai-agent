@@ -176,10 +176,13 @@ async fn run_main(prompt: Option<String>) -> Result<(), Box<dyn std::error::Erro
 async fn run_update(_version: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
     println!("Checking for updates...");
 
+    let current_version = env!("CARGO_PKG_VERSION");
+
     let status = self_update::backends::github::Update::configure()
         .repo_owner("daydaychao")
         .repo_name("day-ai-agent")
         .bin_name("dayai")
+        .current_version(current_version)
         .show_output(false)
         .show_download_progress(true)
         .build()?
