@@ -1,5 +1,7 @@
 # 🦞 Project: Cloud Lobster (Rust Edition)
 
+[![Latest Release](https://img.shields.io/github/v/release/daydaychao/day-ai-agent?color=green&label=latest)](https://github.com/daydaychao/day-ai-agent/releases/latest)
+
 > **Goal:** Build a 24/7 AI agent using GitHub Actions free compute
 
 ## 🚀 Installation & Usage
