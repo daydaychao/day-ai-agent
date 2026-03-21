@@ -1,6 +1,7 @@
 mod config;
 
 use clap::{Parser, Subcommand};
+use dialoguer::Select;
 use reqwest::Client;
 use serde_json::json;
 
@@ -15,16 +16,14 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// 設定 GEMINI_API_KEY
-    Setkey,
+    /// 設定：API Key 和模型
+    Setup,
     /// 主要邏輯：呼叫 Gemini API
     Main {
         /// 自定義 prompt（可選）
         #[arg(short, long)]
         prompt: Option<String>,
     },
-    /// 列出所有可用的 Gemini 模型
-    Models,
     /// 更新 dayai 到最新版本
     Update {
         /// 指定版本（可選）
@@ -38,14 +37,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Setkey {} => {
-            run_setkey().await?;
+        Commands::Setup {} => {
+            run_setup().await?;
         }
         Commands::Main { prompt } => {
             run_main(prompt).await?;
-        }
-        Commands::Models {} => {
-            run_models().await?;
         }
         Commands::Update { version } => {
             run_update(version).await?;
@@ -55,21 +51,13 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-async fn run_setkey() -> Result<(), Box<dyn std::error::Error>> {
-    let key = config::prompt_for_key()?;
-    config::save_config(&key)?;
-    Ok(())
-}
-
 fn get_api_key() -> Result<String, Box<dyn std::error::Error>> {
-    // 先嘗試從環境變數讀取
     if let Ok(key) = std::env::var("GEMINI_API_KEY") {
         if !key.is_empty() {
             return Ok(key);
         }
     }
 
-    // 嘗試從設定檔讀取
     match config::load_config() {
         Ok(cfg) => {
             if !cfg.api.key.is_empty() {
@@ -79,21 +67,73 @@ fn get_api_key() -> Result<String, Box<dyn std::error::Error>> {
         Err(_) => {}
     }
 
-    Err("錯誤：找不到 GEMINI_API_KEY。請執行 'dayai setkey' 設定，或設定環境變數 GEMINI_API_KEY。".into())
+    Err("錯誤：找不到 GEMINI_API_KEY。請執行 'dayai setup' 設定，或設定環境變數 GEMINI_API_KEY。".into())
+}
+
+async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
+    let items = &[
+        "設定 GEMINI_API_KEY",
+        "選擇預設模型",
+    ];
+
+    let selections = &[
+        config::has_api_key(),
+        config::has_model(),
+    ];
+
+    let formatted_items: Vec<String> = items
+        .iter()
+        .enumerate()
+        .map(|(i, item)| {
+            let checked = if selections[i] { "[✓]" } else { "[ ]" };
+            format!("{} {}", checked, item)
+        })
+        .collect();
+
+    let selection = Select::new()
+        .with_prompt("請選擇操作")
+        .items(&formatted_items)
+        .interact()?;
+
+    match selection {
+        0 => {
+            let key = config::prompt_for_key()?;
+            config::save_config(&key)?;
+        }
+        1 => {
+            let api_key = get_api_key()?;
+            let models = config::fetch_models(&api_key).await?;
+
+            let selected = Select::new()
+                .with_prompt("請選擇模型")
+                .items(&models)
+                .interact()?;
+
+            config::save_model(&models[selected])?;
+            println!("✅ 已選擇：{}", models[selected]);
+        }
+        _ => {}
+    }
+
+    Ok(())
 }
 
 async fn run_main(prompt: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
     let api_key = get_api_key()?;
+    let model = config::get_model();
 
     let client = Client::new();
-    let url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-latest:generateContent";
+    let url = format!(
+        "https://generativelanguage.googleapis.com/v1beta/models/{}:generateContent",
+        model
+    );
 
     let user_prompt = prompt.unwrap_or_else(|| {
         "你是一位資深獵頭，請用 JSON 格式提供一個虛構的日本遠端前端職缺。請確保輸出僅包含 JSON 內容。".to_string()
     });
 
     let response = client
-        .post(url)
+        .post(&url)
         .query(&[("key", &api_key)])
         .header("Content-Type", "application/json")
         .json(&json!({
@@ -116,26 +156,6 @@ async fn run_main(prompt: Option<String>) -> Result<(), Box<dyn std::error::Erro
     let text_result = response.text().await?;
     println!("{}", text_result);
 
-    Ok(())
-}
-
-async fn run_models() -> Result<(), Box<dyn std::error::Error>> {
-    let api_key = get_api_key()?;
-
-    let client = Client::new();
-    let url = format!(
-        "https://generativelanguage.googleapis.com/v1beta/models?key={}",
-        api_key
-    );
-
-    let response = client
-        .get(&url)
-        .send()
-        .await?
-        .text()
-        .await?;
-
-    println!("{}", response);
     Ok(())
 }
 
