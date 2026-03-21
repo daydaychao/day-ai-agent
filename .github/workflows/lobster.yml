@@ -36,4 +36,6 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Smoke-test main.rs
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: cargo run --release
