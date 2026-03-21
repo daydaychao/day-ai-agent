@@ -16,7 +16,7 @@ pub struct ApiConfig {
 }
 
 fn default_model() -> String {
-    "gemini-2.0-flash-latest".to_string()
+    "gemini-flash-latest".to_string()
 }
 
 impl Default for Config {
