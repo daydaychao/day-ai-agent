@@ -70,6 +70,9 @@ fn get_api_key() -> Result<String, Box<dyn std::error::Error>> {
     Err("錯誤：找不到 GEMINI_API_KEY。請執行 'dayai setup' 設定，或設定環境變數 GEMINI_API_KEY。".into())
 }
 
+const LIGHT_GREEN: &str = "\x1b[92m";
+const RESET: &str = "\x1b[0m";
+
 async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
     let items = &[
         "設定 GEMINI_API_KEY",
@@ -86,14 +89,17 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
         .enumerate()
         .map(|(i, item)| {
             let checked = if selections[i] { "[✓]" } else { "[ ]" };
-            format!("{} {}", checked, item)
+            format!("{}{} {}{}", LIGHT_GREEN, checked, item, RESET)
         })
         .collect();
 
     let selection = Select::new()
         .with_prompt("請選擇操作")
+        .default(0)
+        .clear(true)
         .items(&formatted_items)
-        .interact()?;
+        .interact_opt()?
+        .ok_or("已取消")?;
 
     match selection {
         0 => {
@@ -104,10 +110,18 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
             let api_key = get_api_key()?;
             let models = config::fetch_models(&api_key).await?;
 
+            let formatted_models: Vec<String> = models
+                .iter()
+                .map(|m| format!("{}{}{}", LIGHT_GREEN, m, RESET))
+                .collect();
+
             let selected = Select::new()
                 .with_prompt("請選擇模型")
-                .items(&models)
-                .interact()?;
+                .default(0)
+                .clear(true)
+                .items(&formatted_models)
+                .interact_opt()?
+                .ok_or("已取消")?;
 
             config::save_model(&models[selected])?;
             println!("✅ 已選擇：{}", models[selected]);
