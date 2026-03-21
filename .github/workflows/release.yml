@@ -3,7 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'  # 當 push v0.0.1, v0.0.2 等 tag 時觸發
+      - 'v*'
 
 jobs:
   release:
@@ -21,10 +21,13 @@ jobs:
       - name: Build release binary
         run: cargo build --release --locked
 
+      - name: Create tarball
+        run: tar czf dayai-x86_64-unknown-linux-gnu.tar.gz target/release/dayai
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: target/release/dayai
+          files: dayai-x86_64-unknown-linux-gnu.tar.gz
           tag_name: ${{ github.ref }}
           name: ${{ github.ref_name }}
           generate_release_notes: true
