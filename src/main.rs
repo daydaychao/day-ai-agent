@@ -1,7 +1,8 @@
+mod config;
+
 use clap::{Parser, Subcommand};
 use reqwest::Client;
 use serde_json::json;
-use std::env;
 
 #[derive(Parser)]
 #[command(name = "dayai")]
@@ -14,6 +15,8 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
+    /// 設定 GEMINI_API_KEY
+    Setkey,
     /// 主要邏輯：呼叫 Gemini API
     Main {
         /// 自定義 prompt（可選）
@@ -35,6 +38,9 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     match cli.command {
+        Commands::Setkey {} => {
+            run_setkey().await?;
+        }
         Commands::Main { prompt } => {
             run_main(prompt).await?;
         }
@@ -49,11 +55,35 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     Ok(())
 }
 
-async fn run_main(prompt: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
-    dotenv::dotenv().ok();
+async fn run_setkey() -> Result<(), Box<dyn std::error::Error>> {
+    let key = config::prompt_for_key()?;
+    config::save_config(&key)?;
+    Ok(())
+}
 
-    let api_key = env::var("GEMINI_API_KEY")
-        .expect("錯誤：環境變數 GEMINI_API_KEY 未設定。本地請設在 .env，GitHub 請設在 Secrets。");
+fn get_api_key() -> Result<String, Box<dyn std::error::Error>> {
+    // 先嘗試從環境變數讀取
+    if let Ok(key) = std::env::var("GEMINI_API_KEY") {
+        if !key.is_empty() {
+            return Ok(key);
+        }
+    }
+
+    // 嘗試從設定檔讀取
+    match config::load_config() {
+        Ok(cfg) => {
+            if !cfg.api.key.is_empty() {
+                return Ok(cfg.api.key);
+            }
+        }
+        Err(_) => {}
+    }
+
+    Err("錯誤：找不到 GEMINI_API_KEY。請執行 'dayai setkey' 設定，或設定環境變數 GEMINI_API_KEY。".into())
+}
+
+async fn run_main(prompt: Option<String>) -> Result<(), Box<dyn std::error::Error>> {
+    let api_key = get_api_key()?;
 
     let client = Client::new();
     let url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-latest:generateContent";
@@ -90,10 +120,7 @@ async fn run_main(prompt: Option<String>) -> Result<(), Box<dyn std::error::Erro
 }
 
 async fn run_models() -> Result<(), Box<dyn std::error::Error>> {
-    dotenv::dotenv().ok();
-
-    let api_key = env::var("GEMINI_API_KEY")
-        .expect("錯誤：環境變數 GEMINI_API_KEY 未設定。本地請設在 .env，GitHub 請設在 Secrets。");
+    let api_key = get_api_key()?;
 
     let client = Client::new();
     let url = format!(

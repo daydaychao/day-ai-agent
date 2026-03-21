@@ -1,13 +1,33 @@
 # 🦞 Project: Cloud Lobster (Rust Edition)
 
-> **目標：** 復刻「小龍蝦」核心邏輯，利用 GitHub Actions 免費算力打造 24h 雲端代理人。
+> **目標：** 利用 GitHub Actions 代理你的龍蝦
 
 ## 🚀 安裝與使用
 
 ### 安裝 dayai CLI
 
+#### 方式一：使用安裝腳本（推薦）
+
+```bash
+git clone https://github.com/daydaychao/day-ai-agent.git
+cd day-ai-agent
+./install.sh
+source ~/.bashrc
+dayai setkey
+```
+
+#### 方式二：手動安裝
+
+```bash
+cargo install --path .
+dayai setkey
+```
+
+#### 方式三：從 GitHub 安裝（已發布版本）
+
 ```bash
 cargo install --git https://github.com/daydaychao/day-ai-agent --bin dayai
+dayai setkey
 ```
 
 ### CLI 使用方式
