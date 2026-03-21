@@ -10,7 +10,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::new();
 
     let response = client
-        .post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent")
+        .post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent")
         .query(&[("key", &api_key)])
         .json(&json!({
             "contents": [{
