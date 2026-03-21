@@ -8,6 +8,11 @@ on:
 jobs:
   run-lobster:
     runs-on: ubuntu-latest
+    # --- permissions ---
+    permissions:
+      contents: write # 這是建立 Release 的關鍵權限
+      packages: write # 如果以後要推送到 GitHub Packages 也先留著
+    # ---------------------
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
