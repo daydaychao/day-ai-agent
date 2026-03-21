@@ -1,0 +1,9 @@
+name: Lobster First Run
+on: workflow_dispatch
+
+jobs:
+  say-hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run a message
+        run: echo "小龍蝦準備就緒！這是我的雲端辦公室。"
