@@ -3,6 +3,7 @@ mod config;
 use clap::{Parser, Subcommand};
 use dialoguer::Select;
 use reqwest::Client;
+use serde::Deserialize;
 use serde_json::json;
 
 #[derive(Parser)]
@@ -167,8 +168,35 @@ async fn run_main(prompt: Option<String>) -> Result<(), Box<dyn std::error::Erro
         return Ok(());
     }
 
-    let text_result = response.text().await?;
-    println!("{}", text_result);
+    let response_text = response.text().await?;
+
+    #[derive(Deserialize)]
+    struct GeminiResponse {
+        candidates: Vec<Candidate>,
+    }
+
+    #[derive(Deserialize)]
+    struct Candidate {
+        content: Content,
+    }
+
+    #[derive(Deserialize)]
+    struct Content {
+        parts: Vec<Part>,
+    }
+
+    #[derive(Deserialize)]
+    struct Part {
+        text: String,
+    }
+
+    let parsed: GeminiResponse = serde_json::from_str(&response_text)?;
+
+    if let Some(candidate) = parsed.candidates.first() {
+        if let Some(part) = candidate.content.parts.first() {
+            println!("{}", part.text);
+        }
+    }
 
     Ok(())
 }
