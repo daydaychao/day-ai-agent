@@ -53,14 +53,14 @@ pub fn load_config_or_default() -> Config {
 
 pub fn has_api_key() -> bool {
     match load_config() {
-        Ok(cfg) => !cfg.api.key.is_empty(),
+        Ok(cfg) => !cfg.api.key.trim().is_empty(),
         Err(_) => false,
     }
 }
 
 pub fn has_model() -> bool {
     match load_config() {
-        Ok(cfg) => !cfg.api.model.is_empty(),
+        Ok(cfg) => !cfg.api.model.trim().is_empty(),
         Err(_) => false,
     }
 }
