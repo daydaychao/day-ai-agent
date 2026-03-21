@@ -10,20 +10,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let client = Client::new();
 
     let response = client
-        .post("https://api.groq.com/openai/v1/chat/completions")
-        .header("Authorization", format!("Bearer {}", api_key))
+        .post("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent")
+        .query(&[("key", &api_key)])
         .json(&json!({
-            "model": "llama-3.3-70b-specdec",
-            "messages": [
-                {"role": "system", "content": "你是一位資深獵頭，請用 JSON 格式提供一個虛釋的遠端前端職缺。"},
-                {"role": "user", "content": "請開始。"}
-            ]
+            "contents": [{
+                "parts": [{
+                    "text": "你是一位資深獵頭，請用 JSON 格式提供一個虛構的遠端前端職缺。"
+                }]
+            }]
         }))
         .send()
         .await?
         .text()
         .await?;
 
-    println!("Groq 回傳結果: \n{}", response);
+    println!("Gemini 回傳結果: \n{}", response);
     Ok(())
 }
