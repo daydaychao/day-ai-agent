@@ -75,9 +75,10 @@ const LIGHT_GREEN: &str = "\x1b[92m";
 const RESET: &str = "\x1b[0m";
 
 async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
+    let current_model = config::get_model();
     let items = &[
         "Set GEMINI_API_KEY",
-        "Select default model",
+        &format!("Select default model  (current: {})", current_model),
     ];
 
     let selections = &[
