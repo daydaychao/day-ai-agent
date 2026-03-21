@@ -1,9 +1,26 @@
-name: Lobster First Run
-on: workflow_dispatch
+name: Cloud Lobster Brain
+
+on:
+  workflow_dispatch: # 允許在 GitHub 網頁手動觸發 (Phase 1 目標)
+  schedule:
+    - cron: "0 22 * * *" # 每天早上 6 點自動跑 (UTC 22:00)
 
 jobs:
-  say-hello:
+  run-lobster:
     runs-on: ubuntu-latest
     steps:
-      - name: Run a message
-        run: echo "小龍蝦準備就緒！這是我的雲端辦公室。"
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Rust Toolchain
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Rust Cache
+        uses: Swatinem/rust-cache@v2 # 導入 rust-cache 優化編譯與執行速度
+
+      - name: Build and Run Lobster Brain
+        env:
+          # 讀取 Phase 1 提到的 GitHub Secrets
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          # DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+        run: cargo run --release
