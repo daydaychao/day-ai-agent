@@ -2,7 +2,7 @@ mod agent;
 mod config;
 
 use clap::{Parser, Subcommand};
-use dialoguer::Select;
+use dialoguer::{Select, theme::ColorfulTheme};
 
 #[derive(Parser)]
 #[command(name = "dayai")]
@@ -88,12 +88,19 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
         .iter()
         .enumerate()
         .map(|(i, item)| {
-            let checked = if selections[i] { "[✓]" } else { "[ ]" };
-            format!("{}{}>>{} {}{}", LIGHT_GREEN, checked, RESET, item, RESET)
+            if selections[i] {
+                format!("[✓] {}", item)
+            } else {
+                format!("[ ] {}", item)
+            }
         })
         .collect();
 
-    let selection = Select::new()
+    let mut theme = ColorfulTheme::default();
+    theme.active_item_prefix = dialoguer::console::style(">>".to_string()).green().into();
+    theme.inactive_item_prefix = dialoguer::console::style("   ".to_string()).into();
+
+    let selection = Select::with_theme(&theme)
         .with_prompt("Select an option")
         .default(0)
         .clear(true)
