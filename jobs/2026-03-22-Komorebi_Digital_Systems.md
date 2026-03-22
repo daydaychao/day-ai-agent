@@ -1,77 +1,91 @@
-# Senior Frontend Engineer (React/Next.js)
+# N/A
 
 ## Company
-Komorebi Digital Systems (Shibuya, Tokyo, Japan)
+Komorebi Digital Systems (Shibuya, Tokyo)
 
 ## Salary
- 0-0 JPY / year
+ 🔥 10000000-15500000 JPY / year 🔥
 
 ## Tech Stack
+- React 18
+- TypeScript
+- Next.js 14
+- AWS
+- Vercel
+- GitHub Actions
+- Zustand
+- TanStack Query
+- Tailwind CSS
+- Headless UI
+- Jest
+- Playwright
 
 ## Info
-- Posted: N/A
+- Posted: 2024-05-20
 
 ## Original JSON
 
 ```json
 {
-  "job_id": "JP-FE-2024-088",
-  "status": "Active",
-  "job_title": "Senior Frontend Engineer (React/Next.js)",
-  "company": {
-    "name": "Komorebi Digital Systems",
-    "industry": "FinTech / SaaS",
-    "headquarters": "Shibuya, Tokyo, Japan",
-    "description": "A high-growth startup specializing in decentralized finance solutions for the APAC market."
-  },
-  "work_configuration": {
-    "type": "Full Remote",
-    "location_requirement": "Must reside in Japan (for tax and insurance purposes)",
-    "working_hours": "Flexible (Core hours: 11:00 AM - 3:00 PM JST)"
-  },
-  "compensation": {
-    "currency": "JPY",
-    "min_annual_salary": 9000000,
-    "max_annual_salary": 14000000,
-    "bonus": "Performance-based annual bonus",
-    "equity": "Stock options available"
-  },
-  "technical_stack": [
-    "React 18",
-    "Next.js",
-    "TypeScript",
-    "Tailwind CSS",
-    "TanStack Query",
-    "Zustand",
-    "Jest/Cypress"
-  ],
-  "responsibilities": [
-    "Architect and implement scalable frontend architectures for our core investment platform.",
-    "Collaborate with product managers and UI/UX designers to deliver high-fidelity interfaces.",
-    "Optimize application performance and ensure accessibility (WCAG) compliance.",
-    "Lead code reviews and mentor junior-to-mid level developers.",
-    "Contribute to the internal UI component library and design system documentation."
-  ],
-  "requirements": {
-    "experience": "5+ years of professional experience in frontend development.",
-    "skills": [
-      "Expert-level proficiency in TypeScript and React.",
-      "Proven track record of deploying Next.js applications in production environments.",
-      "Experience with modern CI/CD pipelines (GitHub Actions, Vercel).",
-      "Strong understanding of RESTful and GraphQL API integration."
+  "job_listing": {
+    "id": "J-TECH-2024-089",
+    "status": "Active",
+    "posted_date": "2024-05-20",
+    "company": {
+      "name": "Komorebi Digital Systems",
+      "industry": "FinTech / SaaS",
+      "headquarters": "Shibuya, Tokyo",
+      "description": "A high-growth startup specializing in cross-border payment solutions for APAC markets."
+    },
+    "role": {
+      "title": "Senior Frontend Engineer",
+      "level": "Senior / Lead",
+      "department": "Product Engineering",
+      "employment_type": "Full-time / Permanent",
+      "work_model": "100% Remote (Must be resident of Japan for tax purposes)",
+      "language_requirements": {
+        "english": "Business Level (Fluent)",
+        "japanese": "Conversational (Optional, but preferred)"
+      }
+    },
+    "compensation": {
+      "salary_range": {
+        "min": 10000000,
+        "max": 15500000,
+        "currency": "JPY"
+      },
+      "equity": "Stock options available after 1 year",
+      "bonus": "Performance-based annual bonus (up to 15%)"
+    },
+    "tech_stack": {
+      "core": ["React 18", "TypeScript", "Next.js 14"],
+      "state_management": ["Zustand", "TanStack Query"],
+      "styling": ["Tailwind CSS", "Headless UI"],
+      "testing": ["Jest", "Playwright"],
+      "infrastructure": ["AWS", "Vercel", "GitHub Actions"]
+    },
+    "responsibilities": [
+      "Architect and implement scalable frontend components for a global payment dashboard.",
+      "Optimize web application performance to ensure sub-second load times across low-bandwidth regions.",
+      "Mentor junior and mid-level developers through code reviews and pair programming.",
+      "Collaborate with UX designers to bridge the gap between design mocks and technical feasibility.",
+      "Lead the transition from a legacy SPAs to a modern SSR architecture using Next.js."
     ],
-    "languages": {
-      "english": "Fluent (Business level)",
-      "japanese": "Conversational (N3 level preferred, but not required)"
-    }
-  },
-  "benefits": [
-    "Full Japanese Social Insurance (Shakai Hoken).",
-    "Commuter allowance (if visiting the office).",
-    "Remote work stipend (5,000 JPY/month).",
-    "High-end MacBook Pro and ergonomic furniture budget.",
-    "Visa sponsorship available for candidates already in Japan.",
-    "Unlimited PTO policy."
-  ]
+    "requirements": [
+      "6+ years of professional experience in frontend development.",
+      "Proven track record of building and maintaining large-scale production React applications.",
+      "Deep understanding of browser APIs, DOM manipulation, and modern CSS (Grid/Flexbox).",
+      "Experience with CI/CD pipelines and automated testing suites.",
+      "Strong communication skills for a distributed team environment."
+    ],
+    "benefits": [
+      "Flexible working hours (Core hours 11:00 - 15:00 JST)",
+      "High-end hardware allowance (¥300,000 every 2 years)",
+      "Monthly remote work stipend (¥15,000)",
+      "Full Japanese social insurance (Shakai Hoken)",
+      "Visa sponsorship and relocation support (if applicable)",
+      "Unlimited PTO policy"
+    ]
+  }
 }
 ```
