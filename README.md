@@ -34,8 +34,8 @@ dayai setup
 
 ```bash
 dayai setup              # First time setup: API Key and model selection
-dayai main              # Execute main logic (call Gemini API)
-dayai main --prompt "..."  # Custom prompt
+dayai agent              # Execute agent (call Gemini API)
+dayai agent --prompt "..."  # Custom prompt
 dayai update            # Update dayai to latest version
 dayai update --version v0.0.2 # Update to specific version
 ```
@@ -53,7 +53,7 @@ dayai update --version v0.0.2 # Update to specific version
 - [x] **Async Requests**: Using `tokio` + `reqwest` to call Gemini API.
 - [x] **Structured Dialogue**: Using `serde_json` to handle AI responses for stable logic.
 - [x] **Prompt Engineering**: Designing "command-style" prompts for task execution mode.
-- [x] **CLI Tool**: Using `clap` to implement subcommands (main, update, setup).
+- [x] **CLI Tool**: Using `clap` to implement subcommands (agent, update, setup).
 
 ### Phase 3: Automation Practice
 
@@ -65,7 +65,7 @@ dayai update --version v0.0.2 # Update to specific version
 
 - [x] GitHub Public Repo established.
 - [x] Gemini API Key configuration (`dayai setup`).
-- [x] `dayai` CLI tool complete with `main`, `update`, `setup` subcommands.
+- [x] `dayai` CLI tool complete with `agent`, `update`, `setup` subcommands.
 - [ ] Phase 3: Information monitoring + Discord/State automation not yet implemented.
 
 ## 📦 Release Process
