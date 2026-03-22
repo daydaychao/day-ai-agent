@@ -81,7 +81,7 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
         config::has_model(),
     ];
 
-    let formatted_items: Vec<String> = items
+    let mut formatted_items: Vec<String> = items
         .iter()
         .enumerate()
         .map(|(i, item)| {
@@ -92,10 +92,11 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
             }
         })
         .collect();
+    formatted_items.push("Exit".to_string());
 
     let mut theme = ColorfulTheme::default();
     theme.active_item_prefix = dialoguer::console::style(">> ".to_string()).green().into();
-    theme.inactive_item_prefix = dialoguer::console::style("    ".to_string()).into();
+    theme.inactive_item_prefix = dialoguer::console::style("   ".to_string()).into();
 
     let selection = Select::with_theme(&theme)
         .with_prompt("Select an option")
@@ -114,10 +115,11 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
             let api_key = get_api_key()?;
             let models = config::fetch_models(&api_key).await?;
 
-            let formatted_models: Vec<String> = models
+            let mut formatted_models: Vec<String> = models
                 .iter()
                 .map(|m| m.clone())
                 .collect();
+            formatted_models.push("Exit".to_string());
 
             let mut theme = ColorfulTheme::default();
             theme.active_item_prefix = dialoguer::console::style(">> ".to_string()).green().into();
@@ -128,11 +130,15 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
                 .default(0)
                 .clear(true)
                 .items(&formatted_models)
-                .interact()
-                .map_err(|_| "Cancelled")?;
+                .interact_opt()?
+                .ok_or("Cancelled")?;
 
-            config::save_model(&models[selected])?;
-            println!("✅ Selected: {}", models[selected]);
+            if selected == formatted_models.len() - 1 {
+                println!("Exiting...");
+            } else {
+                config::save_model(&models[selected])?;
+                println!("✅ Selected: {}", models[selected]);
+            }
         }
         _ => {}
     }
