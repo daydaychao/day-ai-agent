@@ -10,7 +10,7 @@ use dialoguer::Select;
 #[command(about = "Cloud Lobster AI Agent CLI", long_about = None)]
 struct Cli {
     #[command(subcommand)]
-    command: Option<Commands>,
+    command: Commands,
 }
 
 #[derive(Subcommand)]
@@ -36,17 +36,14 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     match cli.command {
-        Some(Commands::Setup {}) => {
+        Commands::Setup {} => {
             run_setup().await?;
         }
-        Some(Commands::Agent { prompt }) => {
+        Commands::Agent { prompt } => {
             agent::run_agent(prompt).await?;
         }
-        Some(Commands::Update { version }) => {
+        Commands::Update { version } => {
             run_update(version).await?;
-        }
-        None => {
-            agent::run_agent(None).await?;
         }
     }
 

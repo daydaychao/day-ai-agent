@@ -28,7 +28,7 @@ jobs:
           set -a
           source .env
           set +a
-          cargo run --release
+          cargo run --release -- agent
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
