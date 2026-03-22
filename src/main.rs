@@ -121,7 +121,7 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
 
             let mut theme = ColorfulTheme::default();
             theme.active_item_prefix = dialoguer::console::style(">> ".to_string()).green().into();
-            theme.inactive_item_prefix = dialoguer::console::style("    ".to_string()).into();
+            theme.inactive_item_prefix = dialoguer::console::style("   ".to_string()).into();
 
             let selected = Select::with_theme(&theme)
                 .with_prompt("Select a model")
