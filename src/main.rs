@@ -69,9 +69,6 @@ pub fn get_api_key() -> Result<String, Box<dyn std::error::Error>> {
     Err("Error: GEMINI_API_KEY not found. Run 'dayai setup' to configure, or set GEMINI_API_KEY environment variable.".into())
 }
 
-const LIGHT_GREEN: &str = "\x1b[92m";
-const RESET: &str = "\x1b[0m";
-
 async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
     let current_model = config::get_model();
     let items = &[
@@ -119,10 +116,14 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
 
             let formatted_models: Vec<String> = models
                 .iter()
-                .map(|m| format!("{}{}{}", LIGHT_GREEN, m, RESET))
+                .map(|m| m.clone())
                 .collect();
 
-            let selected = Select::new()
+            let mut theme = ColorfulTheme::default();
+            theme.active_item_prefix = dialoguer::console::style(">>".to_string()).green().into();
+            theme.inactive_item_prefix = dialoguer::console::style("   ".to_string()).into();
+
+            let selected = Select::with_theme(&theme)
                 .with_prompt("Select a model")
                 .default(0)
                 .clear(true)
