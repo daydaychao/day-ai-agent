@@ -89,7 +89,7 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
         .enumerate()
         .map(|(i, item)| {
             let checked = if selections[i] { "[✓]" } else { "[ ]" };
-            format!("{}{} {}{}", LIGHT_GREEN, checked, item, RESET)
+            format!("{}{}>>{} {}{}", LIGHT_GREEN, checked, RESET, item, RESET)
         })
         .collect();
 
