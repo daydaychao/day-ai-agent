@@ -128,8 +128,8 @@ async fn run_setup() -> Result<(), Box<dyn std::error::Error>> {
                 .default(0)
                 .clear(true)
                 .items(&formatted_models)
-                .interact_opt()?
-                .ok_or("Cancelled")?;
+                .interact()
+                .map_err(|_| "Cancelled")?;
 
             config::save_model(&models[selected])?;
             println!("✅ Selected: {}", models[selected]);
