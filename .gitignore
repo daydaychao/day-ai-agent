@@ -1,4 +1,4 @@
 .lh
-.env
 node_modules
 target/
+.env

@@ -12,7 +12,7 @@ use serde_json::json;
 #[command(about = "Cloud Lobster AI Agent CLI", long_about = None)]
 struct Cli {
     #[command(subcommand)]
-    command: Commands,
+    command: Option<Commands>,
 }
 
 #[derive(Subcommand)]
@@ -38,14 +38,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Setup {} => {
+        Some(Commands::Setup {}) => {
             run_setup().await?;
         }
-        Commands::Main { prompt } => {
+        Some(Commands::Main { prompt }) => {
             run_main(prompt).await?;
         }
-        Commands::Update { version } => {
+        Some(Commands::Update { version }) => {
             run_update(version).await?;
+        }
+        None => {
+            run_main(None).await?;
         }
     }
 

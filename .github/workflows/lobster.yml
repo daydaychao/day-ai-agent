@@ -1,29 +1,49 @@
-name: Cloud Lobster Brain
+name: Lobster AI Agent 🦞
 
 on:
-  workflow_dispatch:
+  push:
+    branches: [main] # 開發時保留，方便測試
   schedule:
-    - cron: "0 22 * * *" # 每天早上 6 點自動跑 (UTC 22:00)
+    - cron: "0 22 * * *" # 每天台北時間早上 06:00 自動喚醒
+  workflow_dispatch: # 讓你可以手動在 GitHub 頁面點擊 "Run workflow"
+
+permissions:
+  contents: write # 關鍵：允許 Agent 把結果寫回 Repo
 
 jobs:
-  run-lobster:
+  run-agent:
     runs-on: ubuntu-latest
-    # --- permissions ---
-    permissions:
-      contents: write # 這是建立 Release 的關鍵權限
-      packages: write # 如果以後要推送到 GitHub Packages 也先留著
-    # ---------------------
+
     steps:
-      - name: Checkout Repository
+      - name: 📥 檢出代碼 (Checkout)
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # 獲取完整歷史，避免 git push 出錯
 
-      - name: Setup Rust Toolchain
-        uses: dtolnay/rust-toolchain@1.94
+      - name: 🦀 設置 Rust 環境
+        uses: dtolnay/rust-toolchain@stable
 
-      - name: Rust Cache
-        uses: Swatinem/rust-cache@v2
-
-      - name: Build and Run Lobster Brain
+      - name: 🧠 執行 Agent 邏輯 (Run Brain)
+        run: |
+          set -a
+          source .env
+          set +a
+          cargo run --release
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-        run: cargo run --release -- main
+
+      - name: 📝 狀態持久化 (Persistence)
+        run: |
+          git config --local user.email "github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "lobster-bot"
+
+          # 檢查是否有新產生的 jobs 檔案或狀態變更
+          git add jobs/*.md || true
+
+          # 如果有變更才 commit，避免 workflow 報錯
+          if ! git diff --cached --quiet; then
+            git commit -m "chore: 🦀 龍蝦更新了今天的職缺報告 [skip ci]"
+            git push origin main
+          else
+            echo "今天沒有發現新內容，無需更新。"
+          fi

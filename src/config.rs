@@ -113,6 +113,11 @@ pub fn prompt_for_key() -> Result<String, Box<dyn std::error::Error>> {
 }
 
 pub fn get_model() -> String {
+    if let Ok(model) = std::env::var("DAYAI_MODEL") {
+        if !model.trim().is_empty() {
+            return model;
+        }
+    }
     load_config()
         .map(|c| c.api.model)
         .unwrap_or_else(|_| default_model())
